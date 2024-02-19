@@ -25,7 +25,7 @@ matplotlib==3.3.4
 networkx==2.6.2           
 numpy==1.24.4       
 openpyxl==3.0.7              
-pillow==10.0.1                
+pillow==10.2.0                
 pyexcelerator==0.6.4.1          
 pyparsing==2.4.7              
 pypng==0.0.20             
