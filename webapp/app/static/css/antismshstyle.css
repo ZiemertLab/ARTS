@@ -1,0 +1,154 @@
+#downloadmenu {
+  border: 1px solid black;
+  background-color: white;
+  display: none;
+  position: absolute;
+  width: 20%;
+}
+.clusterblast-locustag {
+  fill: #810e15;
+  display: none;
+  font-size: 12pt;
+  position: absolute;
+}
+.clusterblast-tooltip {
+  border: 2px solid slategray;
+  background-color: #dddddd;
+  display: none;
+  position: absolute;
+  font-size: 12pt;
+  padding: 0.5em;
+  color: #810e15;
+}
+.cluster-rules {
+  font-size: 70%;
+  display: none;
+  border: 1px solid slategray;
+  background-color: #dddddd;
+}
+.svgene-type-Core {
+  fill: #ffcc44;
+  stroke: black;
+}
+.svgene-type-CoreRes {
+  fill: #9900ff;
+  stroke: black;
+}
+.svgene-type-ResModel {
+  fill: #ccff44;
+  stroke: black;
+}
+.svgene-type-other {
+  fill: gray;
+  stroke: black;
+}
+.svgene-type-biosynthetic {
+  fill: #810e15;
+  stroke: black;
+}
+.svgene-type-transport {
+  fill: cornflowerblue;
+  stroke: black;
+}
+.svgene-type-regulatory {
+  fill: seagreen;
+  stroke: black;
+}
+.svgene-line {
+  stroke-width: 1px;
+  stroke: #888;
+}
+.svgene-locustag {
+  fill: #810e15;
+  display: none;
+  font-size: 12pt;
+}
+.svgene-tooltip {
+  border: 2px solid slategray;
+  background-color: #dddddd;
+  display: none;
+  position: absolute;
+  font-size: 12pt;
+  padding: 0.5em;
+  color: #810e15;
+}
+.svgene-tooltip-bold {
+  font-weight: bold;
+  font-size: 120%;
+}
+.jsdomain-tooltip {
+  border: 2px solid slategray;
+  background-color: #dddddd;
+  display: none;
+  position: absolute;
+  font-size: 12pt;
+  padding: 0.5em;
+  color: #810e15;
+}
+.clusterblast-locustag {
+  fill: #810e15;
+  display: none;
+  font-size: 12pt;
+  position: absolute;
+}
+.clusterblast-tooltip {
+  border: 2px solid slategray;
+  background-color: #dddddd;
+  display: none;
+  position: absolute;
+  font-size: 12pt;
+  padding: 0.5em;
+  color: #810e15;
+}
+.legend-type-other {
+  background-color: gray;
+}
+.legend-type-DUF {
+  background-color: black;
+}
+.legend-type-Core {
+  background-color: #ffcc44;
+}
+.legend-type-ResModel {
+  background-color: #ccff44;
+}
+.legend-type-CoreRes {
+  background-color: #9900ff;
+}
+.legend-type-biosynthetic {
+  background-color: #810e15;
+}
+.legend-type-transport {
+  background-color: cornflowerblue;
+}
+.legend-type-regulatory {
+  background-color: seagreen;
+}
+.legend {
+  font-size: 12pt;
+  overflow: hidden;
+  width: 800px;
+  margin: auto;
+  text-align: center;
+}
+.legend h4 {
+  margin-bottom: 0.5em;
+}
+.legend-field {
+  float: left;
+  width: 1em;
+  height: 1em;
+  margin-left: 1em;
+  margin-right: 0.25em;
+  border: 1px solid black;
+}
+.legend-label {
+  float: left;
+}
+
+div.bgcdiv{
+    margin: auto;
+    width: 800px;
+    height: 50px;
+    margin-top: 25px;
+}

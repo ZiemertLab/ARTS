@@ -1,0 +1,372 @@
+/*
+ * Globals
+ */
+
+a{
+  color: #801515;
+  text-decoration: none;
+}
+a:hover,a:focus,a:active{
+  color: #550000;
+}
+
+h1,h2,h3,h4{
+    color:#801515;
+}
+
+/* Custom default button */
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: 0 none;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #801515;
+  border-color: #1B1B1B;
+  background: #801515; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left top, #AA3838, #801515); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom right, #AA3838, #801515); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom right, #AA3838, #801515); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom right, #AA3838, #801515); /* Standard syntax */
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #fff;
+  background-color: #801515;
+  border-color: #1B1B1B;
+}
+.btn-primary:hover {
+  color: #fff;
+  background-color: #D76060;
+  border-color: #1B1B1B;
+  background: #D76060; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left top, #D76060, #801515); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(bottom right, #D76060, #801515); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(bottom right, #D76060, #801515); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to bottom right, #D76060, #801515); /* Standard syntax */
+}
+
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  color: #fff;
+  background-color: #801515;
+  border-color: #1B1B1B;
+}
+.btn-primary:active:hover,
+.btn-primary.active:hover,
+.open > .dropdown-toggle.btn-primary:hover,
+.btn-primary:active:focus,
+.btn-primary.active:focus,
+.open > .dropdown-toggle.btn-primary:focus,
+.btn-primary:active.focus,
+.btn-primary.active.focus,
+.open > .dropdown-toggle.btn-primary.focus {
+  color: #fff;
+  background-color: #801515;
+  border-color: #1B1B1B;
+}
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background-image: none;
+}
+.btn-primary.disabled:hover,
+.btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus,
+.btn-primary.disabled.focus,
+.btn-primary[disabled].focus,
+fieldset[disabled] .btn-primary.focus {
+  background-color: #353535;
+  border-color: #1B1B1B;
+}
+.btn-primary .badge {
+  color: #801515;
+  background-color: #fff;
+}
+
+/*
+ * Base structure
+ */
+
+html{
+  position: relative;
+  min-height: 100%;
+  min-width: 300px;
+  padding-bottom: 20px;
+  padding-top: 50px;
+}
+body{
+    height: 100%;
+    padding-top: 0px;
+    margin-bottom: 60px;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+/* Extra markup and styles for table-esque vertical and horizontal centering */
+.site-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%; /* For at least Firefox */
+  min-height: 100%;
+  -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+          box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+}
+.site-wrapper-inner {
+  display: table-cell;
+  vertical-align: top;
+}
+.cover-container {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* Padding for spacing */
+.inner {
+  padding: 30px;
+}
+
+
+/*
+ * Header
+ */
+ .navbar-brand,
+.navbar-nav li a {
+    line-height: 50px;
+    height: 50px;
+    padding-top: 0;
+}
+
+ .navbar-main {
+    min-width: 300px;
+    margin-bottom: 0px;
+    background-color: #801515
+}
+.navbar-main li{
+    background-color: #801515
+}
+
+.navbar-main li:hover{
+  background: #AA3838; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(bottom, #AA3838, #801515); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(top, #AA3838, #801515); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(top, #AA3838, #801515); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to top, #AA3838, #801515); /* Standard syntax */
+}
+
+
+/*
+ * Front
+ */
+
+.frontjt li{
+    font-size: 20px;
+}
+.frontjt h2{
+    color: #FFFFFF;
+    text-shadow: 2px 2px #111;
+}
+.frontjt {
+  color:#FFFFFF;
+  min-height: 300px;
+  background-image: url('/static/images/protbg.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #8A8A8A; /* For browsers that do not support gradients */
+}
+
+.darkbarbg{
+    width: 100%;
+    background: rgb(30,30,30);
+    background: rgba(15,15,15,.8);
+}
+
+/*
+ * About
+ */
+
+.workflowimg{
+    margin: 0 auto;
+    padding: 10px 15% 10px 15%;
+}
+
+/*
+ * Analyze
+ */
+
+.serverstats{
+  padding-left: 15px;
+  width: 100%;
+  margin: 0px;
+  background: #353535; /* For browsers that do not support gradients */
+}
+.serverstats li{
+  color: #C3C3C3;
+}
+li.statuslabel{
+    color: #FFF;
+}
+
+td.seqid{
+  color: #801515;
+}
+
+td.hittype_Core{
+    color: #ffcc44;
+    font-weight: bold;
+    text-shadow:
+   -1px -1px 0 #333,
+    1px -1px 0 #333,
+    -1px 1px 0 #333,
+     1px 1px 0 #333;
+}
+td.hittype_CoreRes{
+    color: #9900ff;
+    font-weight: bold;
+}
+td.hittype_DUF{
+    color: #000000;
+    font-weight: bold;
+}
+td.hittype_ResModel{
+    color: #ccff44;
+    font-weight: bold;
+    text-shadow:
+   -1px -1px 0 #333,
+    1px -1px 0 #333,
+    -1px 1px 0 #333,
+     1px 1px 0 #333;
+}
+
+/*
+ * Contact
+ */
+
+.red{
+    color:red;
+    }
+.form-area
+{
+    background-color: #FAFAFA;
+	padding: 10px 40px 60px;
+	margin: 10px 0px 60px;
+	border: 1px solid GREY;
+	}
+
+/*
+ * Showresults
+ */
+
+#genetreeselector{
+    min-width:300px;
+    width:100%;
+}
+
+.corecirckey{
+    font-size: 11pt;
+}
+
+#corecircle{
+    height: 250px;
+    width: 250px;
+    overflow: none;
+}
+
+#corecirclabel{
+    width: 250px;
+    height: 50px;
+    padding-left: 25px;
+    padding-right: 25px;
+    text-align: center;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #801515;
+}
+
+.smallbox {
+  float: left;
+  width: 10px;
+  height: 10px;
+  margin: 5px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.summarystats td{
+    font-size: 14pt;
+}
+
+td.details-control:hover {
+    background-size: 15px 15px;
+}
+td.details-control {
+    background: url('/static/images/expcolbtn1.png') no-repeat center center;
+    background-size: 10px 10px;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('/static/images/expcolbtn2.png') no-repeat center center;
+    background-size: 10px 10px;
+}
+
+.resultTable{
+    width:100%;
+}
+
+.summtab_yes{
+    font-weight: bold;
+    background-color: #57AC57;}
+
+.treeholder{
+    width: 100%;
+    padding: 25px;
+    height: 400px;
+    overflow: scroll;
+    border: 2px solid GREY;
+}
+
+.zoombtn{
+    font-size: 18px;
+    color: #000099;
+}
+.logwell{
+    height:500px;
+    display:none;
+    overflow: scroll;
+}
+
+.logwell code{
+    font-size: 12px;
+    color: #333333;
+    background: #FFFFFF;
+    white-space: nowrap;
+}
+
+.bgctabChild {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+/*
+ * Footer
+ */
+.footer {
+  position: absolute;
+  text-align: center;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  min-height: 50px;
+  background-color: #fff;
+}
+.footer img{
+    margin: 5px;
+}

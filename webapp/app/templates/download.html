@@ -1,0 +1,49 @@
+{% extends "main.html" %}
+{% block mainbody %}
+    <div class="container">
+        <h2 style="color:#801515">Download</h2>
+        <h5>ARTS is free and open source with no login requirement. Find custom installation instructions at our git repository: <br><br>
+            <a href="https://bitbucket.org/ziemertlab/arts">https://bitbucket.org/ziemertlab/arts</a><br><br>
+            </h5>
+        <h5>The webserver can also be installed separately which can be used to view exported results: <br><br>
+            <a href="https://bitbucket.org/ziemertlab/artswebapp">https://bitbucket.org/ziemertlab/artswebapp</a><br><br>
+            </h5>
+        <div class="section" id="rst-header-quick-start-with-docker-and-docker-compose">
+<h3>Quick start with docker and docker compose:</h3>
+<p>For details on setting up docker and docker-compose see <a class="reference external" href="https://docs.docker.com/compose/install/">https://docs.docker.com/compose/install/</a>
+This will install local instances of the analysis and web server on a unix/linux system.
+For a windows installation see <a class="reference external" href="https://docs.docker.com/docker-for-windows/">https://docs.docker.com/docker-for-windows/</a>
+The end result should be an directory with the docker-compose and ".env" file
+(On windows renaming a file ".file." will produce ".file", or choose save as "<em>.</em>" in notepad)</p>
+<ol class="arabic">
+<li><p class="first">Make an isolated directory and download the docker-compose file to install the pre-built ARTS containers:</p>
+<pre class="literal-block">mkdir ARTSdocker &amp;&amp; cd ARTSdocker
+wget -O docker-compose.yml https://bitbucket.org/ziemertlab/arts/raw/HEAD/docker-compose-arts.yml
+</pre>
+</li>
+<li><p class="first">Set environment variables for multiprocessing, port number to run webserver, and shared folders of host system (replace /tmp with desired path or use these as the default):</p>
+<pre class="literal-block">echo "ARTS_RESULTS=/tmp" &gt; .env
+echo "ARTS_UPLOAD=/tmp" &gt;&gt; .env
+echo "ARTS_RUN=/tmp" &gt;&gt; .env
+echo "ARTS_CPU=1" &gt;&gt; .env
+echo "ARTS_WEBPORT=80" &gt;&gt; .env
+</pre>
+</li>
+<li><p class="first">Build and start the services (from the ARTSdocker directory):</p>
+<pre class="literal-block">docker-compose up
+</pre>
+</li>
+<li><p class="first">Shutting down services and clear containers from disk storage:</p>
+<pre class="literal-block">docker-compose down
+</pre>
+</li>
+</ol>
+<p>Extra) Start services in the background, check for running services,
+and shutdown without removing containers from disk:</p>
+<pre class="literal-block">docker-compose up -d
+docker ps -a
+docker-compose stop
+</pre>
+</div>
+    </div>
+{% endblock %}

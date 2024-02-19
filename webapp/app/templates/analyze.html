@@ -1,0 +1,329 @@
+{% extends "main.html" %}
+{% block mainbody %}
+    <div class="serverstats">
+        <ul class="list-inline">
+            <li class="statuslabel">Server Status &raquo;</li>
+            <li>Running: <span id="server-running">n/a</span></li>
+            <li>Queue: <span id="server-queue">n/a</span></li>
+            <li>Done: <span id="server-done">n/a</span></li>
+        </ul>
+    </div>
+<div class="container">
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-warning" role="alert">
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endwith %}
+    <div class="row">
+        <a href="/example" class="btn btn-primary" style="width:250px;">Open example output &raquo;</a>
+        <a href="/static/exampleinputs/example.gbk" class="btn btn-primary" style="width:250px;">Download example genbank &raquo;</a>
+        <br><hr>
+    </div>
+  <form action="startjob" method="post" enctype="multipart/form-data" name="sequpload" id="sequpload">
+    <div class="form-group row">
+        <div class="col-sm-12">
+            <b>Do any input files contain sequences from multiple species or come from a metagenome?</b>
+        </div>
+    </div>
+
+      <div class="form-group row">
+        <div class="col-md-6">
+            <input type="radio" class="form-check-input" name="singlespecies" id="singlespecies1" value=1>
+            <label class="radio-inline" for="singlespecies1">Yes, my file(s) contains sequences from multiple species</label>
+            </div>
+        <div class="col-md-6">
+            <input type="radio" class="form-check-input" name="singlespecies" id="singlespecies2" checked value=0>
+            <label class="radio-inline" for="singlespecies2">No, each file represents a single genome</label>
+        </div>
+    </div>
+      <hr>
+      <div class="form-group row alert alert-info hidden" id="warnmetagenome" name="warnmetagenome" role="alert">
+          <ul><li>ARTS phylogenetic analysis assumes sequences originate from the same genome/species and so this option is disabled</li>
+              <li>Resistance and Duplicaiton criteria (single copy genes only) will only be used for screening</li>
+                <li>Only pre-analyzed antiSMASH data is accepted for these datasets</li>
+          </ul>
+      </div>
+
+            <!-- MULTIPLE upload Genomes -->
+      <div class="form-group row">
+          <!--<a data-toggle="collapse" href="#multiuploadrow" aria-expanded="false" aria-controls="multiuploadrow" title="expand">-->
+      <h4 class="h4alike">Multi-Genome upload </h4>
+          <!--</a>-->
+      </div>
+      <!--<div class="collapse" id="multiuploadrow">-->
+
+      <div class="form-group row">
+          <h5>* Minimal antiSMASH run on all files and genecluster families will be computed with BiG-SCAPE</h5>
+            <div class="col-md-10">
+            <label for="upfiles">Uploaded genomes</label>
+            <select multiple class="form-control" name="upfiles" id="upfiles" size="10"></select>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-default" id="remfiles" style="margin-top:25px" onclick="removeAllSeqs()">Remove selected sequences</button>
+            </div>
+        </div>
+        <label for="uploadprog">Upload progress</label>
+    <progress id="uploadprog" style="width:100%" value=0 class="bootstripe bootstripe-active"></progress>
+        <div id="ncbiload" class="hidden"><b>Downloading file from NCBI. This may take a few minutes.</b> <div class="loader"></div>
+        </div>
+
+    <div class="form-group row">
+            <label class="control-label col-md-2" for="ncbiacc1"><abbr title="National Center for Biotechnology">NCBI</abbr> Accession Number</label>
+        <div class="col-md-8">
+            <input type="text" class="form-control" name="ncbiacc1" id="ncbiacc1" placeholder="Enter a NCBI accession number" onchange="toggleuploadbtn('ncbibtn',this.value)" onkeyup="toggleuploadbtn('ncbibtn',this.value)"> <!-- hitting enter after entering accession nr automatically submits -->
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary" id="ncbibtn" onclick="uploadSequence('ncbi')" disabled="true"><span class="glyphicon glyphicon-upload"></span> Upload</button>
+        </div>
+    </div>
+        <div class="form-group row">
+            <label class="control-label col-md-2" for="seqfile1">Sequence(s)</label>
+            <div class="col-md-8">
+                <input type="file" class="form-control" id="seqfile1" onkeyup="toggleuploadbtn('seqbtn',this.value);limitseqs(this.id)" onchange="toggleuploadbtn('seqbtn',this.value);limitseqs(this.id)" name="seqfile1" multiple>
+                <p>One genome per sequence file. Limit 20 Genomes per run and maximum of 100Mb per upload. <i>Tip: Hold Ctrl/Cmd to select multiple files at a time.</i> <b>Please upload genomes separately if you run into upload problems due to bad connection.</b></p>
+                <!-- Upload alerts  -->
+                    <div class="alert alert-warning hidden" id="uploadwarn"><strong>Selection is over maximum allowed limits. Please select fewer genomes and ensure they are under the file upload limits.</strong></div>
+                    <div class="alert alert-success hidden" id="uploadsuccess">Upload successful</div>
+                    <div class="alert alert-danger hidden" id="uploadwarning"><strong>Error:</strong> Upload failed</div>
+                    <div class="alert alert-danger hidden" id="errorwarning"><strong>Error:</strong> Invalid accession number or sequence file</div>
+                    <div class="alert alert-danger hidden" id="accwarning"><strong>Error:</strong> Invalid accession number. Accession numbers may only contain alphanumeric characters (A-Z, 0-9) and underscores. Assembly or WGS accession are not supported, please use Refseq / Genbank accessions.</div>
+                    <div class="alert alert-danger hidden" id="duplicatewarning"><strong>Error:</strong> Sequence already uploaded.</div>
+                    <div class="alert alert-warning hidden" id="seqwarn"><strong>Maximum number of files and accession numbers reached.</strong></div>
+
+            </div>
+            <div class="col-md-2">
+            <button type="button" class="btn btn-primary" id="seqbtn" onclick="uploadSequence('seqfile')" disabled="true"><span class="glyphicon glyphicon-upload"></span> Upload</button>
+        </div>
+        </div>
+<!--</div>-->
+        <input type="hidden" id="filesrc" name="filesrc" value="">
+
+      <!-- End multi genome-->
+<!--
+      <div id="newjobsection" name="newjobsection">
+        <div class="form-group row">
+            <h4>New Job</h4>
+            <h5>* Starts a minimal antismash search. For an extended search use the full server at: <a href="http://antismash.secondarymetabolites.org/" target="_blank">http://antismash.secondarymetabolites.org/</a> and paste run id into "Existing Antismash Job"</h5>
+        </div>
+        <div class="form-group row">
+          <label for="ncbiacc" class="col-sm-2 col-form-label">NCBI Accession Number:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" name="ncbiacc" id="ncbiacc">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="seqfile" class="col-sm-2 col-form-label">GenBank / EMBL / Fasta scaffolds</label>
+          <div class="col-sm-10">
+            <input type="file" class="form-control" name="seqfile" id="seqfile">
+          </div>
+        </div>
+    </div>
+      -->
+    <div class="form-group row">
+        <h4>Existing Antismash Job</h4>
+    </div>
+    <div class="form-group row">
+      <label for="asjobid" class="col-sm-2 col-form-label">Job id</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="asjobid" id="asjobid" placeholder="taxon-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="asseqfile" class="col-sm-2 col-form-label">Json file <i>(Antismash5_result.json)</i></label>
+      <div class="col-sm-10">
+        <input type="file" class="form-control" name="asseqfile" id="asseqfile">
+      </div>
+    </div>
+
+    <div class="row">
+        <h4>General</h4>
+    </div>
+      <div class="form-group row">
+      <label for="jobtitle" class="col-sm-2 col-form-label">Job Title</label>
+      <div class="col-sm-10">
+        <input type="text" maxlength="30" class="form-control" id="jobtitle" name="jobtitle" placeholder="(Optional, visible in results page. Titles must be under 30 characters)">
+      </div>
+      </div>
+      <div class="form-group row">
+      <label for="email" class="col-sm-2 col-form-label">Email</label>
+      <div class="col-sm-10">
+        <input type="email" class="form-control" id="email" name="email" placeholder="(Optional)">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2" for="refset">Reference set</label>
+        <div class="col-sm-10">
+        <select name="refset" id="refset" class="form-control">
+            <option selected="selected" value="actinobacteria">Actinobacteria</option>
+            <option value="alphaproteobacteria">Alpha-Proteobacteria</option>
+            <option value="betaproteobacteria">Beta-Proteobacteria</option>
+            <option value="delta_epsilon-proteobacteria">Delta_Epsilon-Proteobacteria</option>
+            <option value="gammaproteobacteria">Gamma-Proteobacteria</option>
+            <option value="firmicutes">Firmicutes</option>
+            <option value="cyanobacteria">Cyanobacteria</option>
+            <option value="fusobacteria">Fusobacteria</option>
+            <option value="bacteroidetes">Bacteroidetes</option>
+            <option value="chlamydiae">Chlamydiae</option>
+            <option value="tenericutes">Tenericutes</option>
+            <option value="spirochaetes">Spirochaetes</option>
+            <option value="deinococcus-thermus">Deinococcus-Thermus</option>
+            <option value="verrucomicrobia">Verrucomicrobia</option>
+            <option value="group1">Group1 [Aquificae, Calditrichaeota, Chrysiogenetes, Coprothermobacterota, Deferribactes]</option>
+	    <option value="group2">Group2 [Armatimonadetes, Chloroflexi, Dictyoglomi, Synergistetes, Thermotogae]</option>
+            <option value="group3">Group3 [Acidobacteria, Balneolaeota, Chlorobi, Elusimicrobia, Fibrobacteres, Gemmatimonadetes, Ignavibacteriae, Lentisphaerae, Nitrospirae, Planctomycetes, Rhodothermaeota, Thermodesulfobacteria]</option>
+            <option value="metagenome">Metagenome (bacterial core genes used)</option>
+        </select>
+        </div>
+
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2">Options</label>
+      <div class="col-sm-10">
+          <div class="form-check">
+          <label class="form-check-label">
+            <input class="form-check-input disabled" type="checkbox" checked="True" disabled="True"> Duplication & BGC Proximity screen
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" checked="True" id="run-phyl" name="run-phyl"> Phylogeny screen (query must be same phyla as reference)
+          </label>
+        </div>
+          <div class="form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" checked="True" id="run-kres" name="run-kres"> Resistance Model screen (scan for know resistance factors)
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" id="run-duf" name="run-duf"> Domain of unknown function screen (DUF)
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" id="run-expert" name="run-expert">
+              Exploration mode (<span data-toggle='tooltip' data-placement='top' title='Use all core genes in reference. May include more false positives. Standard search excludes transporters, regulators, and probable SM biosynthetic genes'>robust search</span>)
+          </label>
+        </div>
+        <div class="form-check">
+          <label class="form-check-label">
+            <input class="form-check-input" type="checkbox" id="saverun" name="saverun"> Save link in cookies (viewable in results page)
+          </label>
+        </div>
+      </div>
+    </div>
+      <div class="row">
+        <a data-toggle="collapse" href="#advancedrow" aria-expanded="false" aria-controls="advancedrow" title="expand">
+            <h4>Advanced <span class="glyphicon glyphicon-plus"></span></h4>
+        </a>
+
+    </div>
+
+      <div class="collapse" id="advancedrow">
+      <div class="form-group row">
+          <label class="col-sm-2" for="custhmm">HMM search mode:</label>
+          <div class="col-sm-10">
+                <label class="radio-inline"><input type="radio" name="searchmode" checked="True" value="TC">Trusted Cutoff (TC)</label>
+                <label class="radio-inline"><input type="radio" name="searchmode" value="NC">Noise Cutoff (NC)</label>
+                <label class="radio-inline"><input type="radio" name="searchmode" value="E1">Explore 1 (90% NC)</label>
+                <label class="radio-inline"><input type="radio" name="searchmode" value="E2">Explore 2 (75% NC)</label>
+                <label class="radio-inline"><input type="radio" name="searchmode" value="E3">Explore 3 (50% NC)</label>
+              <br><br>
+              <p>*Cutoff method used for HMM detection. Thresholds defined by the curators of each HMM model where TC = lowest bit-score of proteins included in model and NC = highest bit-score of proteins not used in model</p>
+          </div>
+      </div>
+      <div class="form-group row">
+          <label class="col-sm-2" for="custhmm">Custom Resistance Model(s) (hmmer v3 file)</label>
+          <div class="col-sm-10"><input type="file" class="form-control" name="custhmm" id="custhmm"></div>
+      </div>
+      <div class="form-group row">
+          <label class="col-sm-2" for="custhmm">Custom Core Gene Model(s) (hmmer v3 file)</label>
+          <div class="col-sm-10"><input type="file" class="form-control" name="custcorehmm" id="custcorehmm"></div>
+      </div>
+          </div>
+      <div class="row">
+      <div class="offset-sm-2 col-sm-10">
+          <br>
+          <br>
+        <button type="button" class="btn btn-primary" style="width:300px;" id="submitjob" onclick="$('#seqfile1').val([]);$('#ncbiacc1').val('');selectAndSend('#sequpload');">Submit Job &raquo;</button>
+        <button type="button" class="btn btn-primary" style="width:300px; display:none;" disabled="true" id="fakebtn">Uploading... &raquo;</button>
+
+      </div>
+    </div>
+  </form>
+    </div>
+    </div>
+
+<script src="/static/js/analysispage.js?v=2.1"></script>
+<script type="text/javascript">
+$('[data-toggle="tooltip"]').tooltip();
+
+function metagenomeinput(){
+    rval = $("input[name='singlespecies']:checked").val();
+    if (rval == 1) {
+        $("#refset").val("metagenome");
+        $('#refset').prop('disabled', 'disabled');
+        $('#run-phyl').prop('checked', false);
+        $('#run-phyl').prop('disabled', 'disabled');
+        $('#newjobsection').addClass('hidden');
+        $('#warnmetagenome').removeClass('hidden');
+    }
+    else{
+        $("#refset").val("actinobacteria");
+        $('#refset').prop('disabled', false);
+        $('#run-phyl').prop('checked', true);
+        $('#run-phyl').prop('disabled', false);
+        $('#newjobsection').removeClass('hidden');
+        $('#warnmetagenome').addClass('hidden');
+
+    }
+}
+
+$("input[name='singlespecies']").change(metagenomeinput);
+
+function statusupdate(data) {
+    $("#server-running").html(data.running);
+    $("#server-queue").html(data.waiting);
+    $("#server-done").html(data.finished);
+    }
+
+var timer1 = 0;
+
+$("#submitjob").click(function(e){
+    $(this).css("display","none");
+    $("#fakebtn").css("display","block");
+})
+
+$(document).ready(function(){
+    $.getJSON('/serverstatus',statusupdate)
+    timer1 = setInterval(function() {
+        $.getJSON('/serverstatus',statusupdate)
+        }, 20000);
+    });
+
+$(window).focus(function() {
+    if (!timer1)
+        $.getJSON('/serverstatus',statusupdate);
+        timer1 = setInterval(function() {
+        $.getJSON('/serverstatus',statusupdate);
+    }, 20000);
+});
+
+$(window).blur(function() {
+    clearInterval(timer1);
+    timer1 = 0;
+});
+
+
+</script>
+
+
+{% endblock %}

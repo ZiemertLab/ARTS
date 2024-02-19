@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+{% block mainbody %}
+    <div class="jumbotron frontjt">
+      <div class="darkbarbg">
+        <div class="container">
+            <h2>Explore Secondary Metabolite gene clusters and uncover new resistant targets</h2>
+            <ul>
+                <li>Screen secondary metabolite gene clusters for known targets</li>
+                <li>Find unique metabolism and resistance factors in SM gene clusters</li>
+                <li>Discover leads to novel antibiotic targets</li>
+            </ul><br>
+            <center><p><a class="btn btn-primary btn-md" href="/analyze" role="button">Start query &raquo;</a> <a class="btn btn-primary btn-md" href="/example" role="button">View example &raquo;</a></p></center>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+        <h2 style="color:#801515">Novel target screening criteria</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <h3 style="color:#000">Phylogeny</h3>
+            <img src="/static/images/phylohgt.png" width="300" class="img-responsive"><br>
+          <p>Evidence of inter-species horizontal transfer indicates potential advantage linked to resistance. </p>
+        </div>
+        <div class="col-md-4">
+          <h3 style="color:#000">Duplication</h3>
+            <img src="/static/images/duplication.png" width="300" class="img-responsive"><br>
+          <p>Un-common gene copy number highlights alternate version potentially involved in resistance. </p>
+       </div>
+        <div class="col-md-4">
+          <h3 style="color:#000">Location</h3>
+            <img src="/static/images/location.png" width="300" class="img-responsive"><br>
+            <p>Gene location in close proximity of predicted antibiotic cluster indicates potential self-resistance mechanism. </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12" align="center">
+          <p><a class="btn btn-default btn-large" href="/about#targetscreen" role="button">View details &raquo;</a></p>
+       </div>
+          <br><br>
+        <h2 style="color:#801515">Secondary metabolite gene cluster prioritization</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <h3 style="color:#000">Known targets</h3>
+          <p>Identify gene clusters that contain known antibiotic gene clusters: Automated target directed genome mining </p>
+        </div>
+        <div class="col-md-4">
+          <h3 style="color:#000">Resistance factors</h3>
+          <p>Scan gene clusters for resistance factors that have been identified using Resfams  and/or custom user models</p>
+       </div>
+        <div class="col-md-4">
+          <h3 style="color:#000">Unique metabolism</h3>
+            <p>Highlight potential repurposed primary metabolism genes as well as Domains of Unknown Function (DUF) in gene cluster</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12" align="center">
+          <p><a class="btn btn-default btn-large" href="/about#prioritization" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+
+    </div> <!-- /container -->
+{% endblock %}

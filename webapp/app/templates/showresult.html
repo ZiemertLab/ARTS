@@ -1,0 +1,250 @@
+{% extends "main.html" %}
+{% block mainbody %}
+<link href="/static/css/sidebar.css" rel="stylesheet">
+<div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <nav id="spy">
+                <ul class="sidebar-nav nav">
+                    <li>
+                        <a href="#summary" data-scroll>
+                            <span class="fa fa-anchor solo">Summary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#coregenes" data-scroll>
+                            <span class="fa fa-anchor solo">Core Genes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#resmodels" data-scroll>
+                            <span class="fa fa-anchor solo">ResModels</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#duplication" data-scroll>
+                            <span class="fa fa-anchor solo">Duplication</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#proximity" data-scroll>
+                            <span class="fa fa-anchor solo">Proximity</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#phylogeny" data-scroll>
+                            <span class="fa fa-anchor solo">Phylogeny</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#export" data-scroll>
+                            <span class="fa fa-anchor solo">Export</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset container-fluid">
+                <div class="row">
+                    <!--<a id="menu-toggle" href="#" class="glyphicon glyphicon-align-justify btn-menu toggle">-->
+                        <!--<i class="fa fa-bars"></i>-->
+                    <!--</a>-->
+                    <div class="col-md-12">
+                        <h2 id="jobtitle">{{jobid}}</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                            <legend>Status: <span id="statetxt">Waiting in queue</span></legend>
+                            <div class="progress">
+                              <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="10"
+                              aria-valuemin="0" aria-valuemax="100" style="width:1%" id="jobprogbar">
+                                    <p id="steptxt">...</p>
+                              </div>
+
+                            </div>
+                            <a href="#" onclick="togglelog();">Show/Hide log</a>
+                            <br><br>
+                            <div id="logwell" class="well logwell">
+                                <code id="logtxt">No log found</code>
+                            </div>
+                            <!--<p><a class="btn btn-primary disabled">Show Log</a></p>-->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" style="padding-bottom:50px;">
+                        <legend id="summary">Summary of hits</legend>
+                            <div class="col-sm-6">
+                                <table class="table-hover summarystats">
+                                <tr><td><a href="#summary">Total genes: </a></td><td align="right"><span id="cdscount">N/A</span></td></tr>
+                                <tr><td><a href="#coregenes">Core/Essential genes: </a></td><td align="right"><span id="corecount">N/A</span></td></tr>
+                                <tr><td><a href="#proximity">Total BGC hits: </a></td><td align="right"><span id="bgccount">N/A</span></td></tr>
+                                <tr><td><a href="#resmodels">Known resistance model hits: </a></td><td align="right"><span id="knownhitscount">N/A</span></td></tr>
+                                </table>
+                                <br>
+                                <table class="table-hover summarystats">
+                                <tr><td><b>ARTS Criteria Hit Counts</b><td align="right"></td></tr>
+                                <tr><td><a href="#duplication">Gene Duplication: </a></td><td align="right"><span id="dupcount">N/A</span></td></tr>
+                                <tr><td><a href="#proximity">BGC Proximity: </a></td><td align="right"><span id="proxcount">N/A</span></td></tr>
+                                <tr><td><a href="#phylogeny">Phylogeny / HGT: </a></td><td align="right"><span id="phylcount">N/A</span></td></tr>
+                                <tr><td><a href="#">2 or more: </a></td><td align="right"><span id="twocount">N/A</span></td></tr>
+                                <tr><td><a href="#">3 or more: </a></td><td align="right"><span id="threecount">N/A</span></td></tr>
+                                </table><br>
+                            </div>
+                            <div class="col-sm-4">
+                                <div id="corecircle"></div>
+                                <div id="corecirclabel"></div>
+                            </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="coregenes">Core Genes: Essential gene table</legend>
+                        <div>Show/Hide columns: <br><a href="#" class="toggle-vis" data-column="2">Description</a> -
+                            <a href="#" class="toggle-vis" data-column="3">Function</a> -
+                            <a href="#" class="toggle-vis" data-column="4">Trusted cutoff (TC)</a> -
+                            <a href="#" class="toggle-vis" data-column="5">Selection (dN/dS)</a> -
+                            <a href="#" class="toggle-vis" data-column="6">Single copy (SC)</a> -
+                            <a href="#" class="toggle-vis" data-column="7">Ubiquity (U)</a></div><br>
+                        <table id="summaryTable" class="table table-striped table-bordered dataTable resultTable">
+                            <thead class="table-inverse">
+                                <tr>
+                                    <th><span class="glyphicon glyphicon-info-sign" data-toggle='tooltip' data-placement='top' title='Expand row using the "+" buttons below'></span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Accession ID of core gene'>Gene</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Abreviation: Gene description from model'>Description</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Functional category'>Function</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Trusted bit score cutoff'>TC</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Nei-Gojobori median dN/dS'>dN/dS</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Single Copy Ratio (#/total org in ref)'>SC</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Ubiquity Ratio (#/total org in ref)'>U</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Duplication'>D</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='BGC Proximity'>B</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Phylogeny'>P</span></th>
+                                    <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Known Resistance'>R</span></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <a href="tables/coretable.tsv">Export: TSV</a><br>
+                        <a href="tables/coretable.json">Export: Json</a>
+                    <br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="resmodels">Resistance Models: Hits to known resistance models and targets</legend>
+                        <div>Show/Hide columns: <br><a href="#" class="toggle-vis2" data-column="5">Sequence titles</a></div>
+                        <table id="krTable" class="table table-striped table-bordered dataTable resultTable">
+                            <thead class="table-inverse">
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Resistance model ID (resfam/other)'>Model</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Model description'>Description</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Extracted query sequence id'>Sequence id</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='E-value score of hit'>E-value</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Bit-score of hit'>Bit-score</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Sequence fasta header'>Title</span></th>
+                            </thead>
+                            <tbody></tbody>
+                            </table>
+                        <a href="tables/knownhits.tsv">Export: TSV</a><br>
+                        <a href="tables/knownhits.json">Export: Json</a><br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="duplication">Duplication: Genes marked as duplicated relative to reference</legend>
+                            <table id="dupTable" class="table table-striped table-bordered dataTable resultTable">
+                            <thead class="table-inverse">
+                                <th><span class="glyphicon glyphicon-info-sign" data-toggle='tooltip' data-placement='top' title='Expand row using the "+" buttons below'></span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Core/Essential gene model accession'>Core Gene</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Abreviation: Gene description from model'>Description</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Number of hits for model'>Count</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Median count of gene hits for each reference organisms'>Ref. Median Count</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Stdev of counts'>Ref. RSD</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Percent of reference organisms that have gene in single copy only'>Ref. % single copy</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Percent of reference organisms containing gene'>Ref. % ubiquity</span></th>
+                            </thead>
+                            <tbody></tbody>
+                            </table>
+                        <a href="tables/duptable.tsv">Export: TSV</a><br>
+                        <a href="tables/duptable.json">Export: Json</a>
+                    <br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="proximity">Proximity: BGC table with localized hits</legend>
+                        <div id="asresultslink"></div>
+                        <table id="bgcTable" class="table table-striped table-bordered dataTable resultTable">
+                            <thead class="table-inverse">
+                                <th><span class="glyphicon glyphicon-info-sign" data-toggle='tooltip' data-placement='top' title='Expand row using the "+" buttons below'></span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Antismash cluster-id'>Cluster</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Cluster type'>Type</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Scaffold / source of hit'>Source</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Start - stop location of cluster'>Location</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Core/essential gene hit count'>Core Hits</span></th>
+                                <th><span class="headertitles" data-toggle='tooltip' data-placement='top' title='Known resistance + DUF model hit count'>Other Hits</span></th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <a href="tables/bgctable.tsv">Export: TSV</a><br>
+                        <a href="tables/bgctable.json">Export: Json</a><br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="phylogeny">Phylogeny: HGT tree comparison</legend>
+                        <div id="phylogenyresults" class="container-fluid">
+                         <div class="row">
+                             <div class="col-md-12 col-lg-6">
+                                <h4>Species Tree: Coalescent tree of single copy genes</h4>
+                                 <a href="#" class="zoombtn" data-zoom="in" data-imgid="sptreeimg"><span class="glyphicon glyphicon-zoom-in"></span></a>
+                                 <a href="#" class="zoombtn" data-zoom="out" data-imgid="sptreeimg"><span class="glyphicon glyphicon-zoom-out"></span></a>
+                                <div id='sptreediv' class='treeholder'>
+                                        <img class="center-block" src="/static/images/loading.gif" width="30" height="30" style="margin-top:30px; margin-bottom:30px;">
+                                </div>
+                             </div>
+                             <div class="col-md-12 col-lg-6">
+                                <h4>Gene Tree: <select id="genetreeselector"><option value="" selected="true">&nbsp;</option>
+                                </select></h4>
+                                    <a href="#" class="zoombtn" data-zoom="in" data-imgid="gntreeimg"><span class="glyphicon glyphicon-zoom-in"></span></a>
+                                    <a href="#" class="zoombtn" data-zoom="out" data-imgid="gntreeimg"><span class="glyphicon glyphicon-zoom-out"></span></a>
+                                    <div id='gntreediv' class='treeholder'>
+                                        <img class="center-block" src="/static/images/loading.gif" width="30" height="30" style="margin-top:30px; margin-bottom:30px;">
+                                    </div>
+                            </div>
+                        </div>
+                        </div>
+                        <br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="export">Export</legend>
+                        <div id="exportlinks">
+                        <img class="center-block" src="/static/images/loading.gif" width="30" height="30" style="margin-top:30px; margin-bottom:30px;">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <input type="hidden" name="jobid" id="jobid" value="{{jobid}}">
+    </div>
+
+    <script type="text/javascript" src="/static/js/purl.js"></script>
+    <script type="text/javascript" src="/static/js/d3.v2.js"></script>
+    <script type="text/javascript" src="/static/js/d3pie.min.js"></script>
+    <script type="text/javascript" src="/static/js/svgene.js"></script>
+    <script type="text/javascript" src="/static/js/jsdomain.js"></script>
+    <script type="text/javascript" src="/static/js/clusterblast.js"></script>
+    <script type="text/javascript" src="/static/js/showresult.js?v=19"></script>
+
+
+    <!--<link rel="stylesheet" type="text/css" href="antismash/css/style.css"/>-->
+    <link rel="stylesheet" type="text/css" href="/static/css/antismshstyle.css"/>
+
+{% endblock %}

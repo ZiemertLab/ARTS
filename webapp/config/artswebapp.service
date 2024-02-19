@@ -1,0 +1,17 @@
+[Unit]
+Description=uWSGI instance for artswebapp
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+RuntimeDirectory=artswebapp
+RuntimeDirectoryMode=0750
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+#Replace artsWD with directory of app ex: /var/opt/artsapp/webapp
+WorkingDirectory=artsWD
+ExecStart=/usr/bin/env uwsgi --ini config/uwsgi.conf
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

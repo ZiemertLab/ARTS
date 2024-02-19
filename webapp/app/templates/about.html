@@ -1,0 +1,166 @@
+{% extends "main.html" %}
+{% block mainbody %}
+<link href="/static/css/sidebar.css" rel="stylesheet">
+<div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <nav id="spy">
+                <ul class="sidebar-nav nav">
+                    <li>
+                        <a href="#overview" data-scroll>
+                            <span class="fa fa-anchor solo">Overview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#targetscreen" data-scroll>
+                            <span class="fa fa-anchor solo">NT Screening</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#prioritization" data-scroll>
+                            <span class="fa fa-anchor solo">SM prioritization</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#publication" data-scroll>
+                            <span class="fa fa-anchor solo">Publication</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ref" data-scroll>
+                            <span class="fa fa-anchor solo">References</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="overview"><h3>Updates</h3></legend>
+                            <h5> ARTS version 2 is now capable of: </h5>
+                                <ul>
+                                    <li>Analyzing all bacterial kingdom as well as metagenomic data (Please see reference sets in analyze page) </li>
+                                    <li>Performing multi genome comparative analysis</li>
+                                    <li>Performing BigSCAPE analysis on all found antismash clusters from multiple organisms</li>
+                                    <li>Using clusters from antiSMSASH v5 json formatted result file</li>
+                                </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="overview"><h3>Overview</h3></legend>
+                            <h5>The goals of this tool are to automate the process of performing target direct genome mining<sup >1,2,3</sup>, search for potential novel antibiotic targets, and prioritize putative secondary metabolite
+                                gene clusters. The following initial automated steps, and associated genome mining tools, that are used to realize these goals are:</h5>
+                                <ul>
+                                    <li><b>Predict Secondary Metabolite gene clusters:</b> <a href="http://antismash.secondarymetabolites.org/" target="_blank">Antibiotics &amp; Secondary Metabolite Analysis SHell (antiSMASH)</a> </li>
+                                    <li><b>Identify known antibiotic targets &amp; Domains of Unknown Function:</b> <a href="http://pfam.xfam.org/">Pfam</a> models of essential genes known to be targeted from published work &amp; DUF domains</li>
+                                    <li><b>Identify known resistance factors:</b> <a href="http://www.dantaslab.org/resfams/">ResFams</a>, manually curated models that include proteins from
+                                        <a href="https://card.mcmaster.ca/">The Comprehensive Antibiotic Resistance Database (CARD)</a>,
+                                        <a href="http://www.laced.uni-stuttgart.de/">The LACtamase Engineering Database (LACED)</a>, and <a href="http://www.lahey.org/Studies/">The Jacobi and Bush Collection</a>
+                                    </li>
+                                    <li><b>Identify essential genes:</b> ARTS comparative pipeline + <a href="http://www.jcvi.org/cgi-bin/tigrfams/index.cgi">TIGRfam</a> Equivologs</li>
+                                </ul>
+                            <h5>Upon completion, the ARTS workflow uses these results to:</h5>
+                                <ul>
+                                    <li><b>Proximity check:</b> Cross reference locations with Secondary Metabolite gene clusters</li>
+                                    <li><b>Uncommon duplication check:</b> Highlight potential repurposed primary metabolism genes</li>
+                                    <li><b>Phylogenetic incongruence:</b> Highlight essential genes with evidence of inter-genus horizontal transfer</li>
+                                    <li><b>Visualize results:</b> Provide an interactive format for rapid manual confirmation</li>
+                                </ul>
+                                <img src="/static/images/workflow_overview.jpg" class="workflowimg img-responsive">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="targetscreen"><h3>Novel Target Screening</h3></legend>
+                            <h5>Potential novel targets are highlighted by exploring the space of essential genes in a query genome and filtering them by
+                                criteria associated with antibiotic resistance:</h5>
+                                    <ul>
+                                        <li><b>Co-expression with secondary metabolite gene cluster:</b> Self-resistance method to avoid suicide during production</li>
+                                        <li><b>Duplication:</b> To maintain non-resistant, likely higher fitness, version of gene</li>
+                                        <li><b>Horizontal transfer:</b> Acquisition of foreign version suggests significant advantage despite pressure to maintain species optimized version</li>
+                                    </ul>
+                        <h4>Reference workflow:</h4>
+                        </div>
+                            <div class="col-md-6">
+                                <img src="/static/images/ref_workflow.jpg" class="workflowimg img-responsive">
+                            </div>
+                            <div class="col-md-6">
+                                <ol type="1">
+                                    <li>Set of phyla specific complete reference genomes are used to determine core genes based on ubiquity</li>
+                                    <li>Genes are classified by protein families and sorted into corresponding protein alignments using MAFFT lins-i method</li>
+                                    <li>protein alignments and nucleotide sequences are run with pal2nal to produce codon alignments</li>
+                                    <li>Trimming is done using trimal to optimize maximum likelihood estimations using "automated1" setting</li>
+                                    <li>Final evolutionary trees are inferred in RaxML using General Time Reversible (GTR) substitution model and GAMMA distribution of site rate variation</li>
+                                </ol>
+                            </div>
+                        <div class="col-md-12">
+                            <h4>Query genome workflow:</h4>
+                            <ol type="1">
+                                <li>Biosynthetic Gene Clusters (BGCs) are identified with antiSMASH if this is not already present. (minimal run omitting extra options is performed)</li>
+                                <li>Known resistance &amp; target models are searched and identified</li>
+                                <li>Core genome models from reference are used to identify and extract query genes.</li>
+                                <li>Duplications are marked based on deviation from the sum of the reference median count and standard deviation. Note: Draft genomes with repeat genes due to mis-assembly should be manually confirmed</li>
+                                <li>Sequences are added to corresponding reference alignments which with MAFFT --add which are used to place them on reference trees using RaxML's Evolutionary Placement Algorithm (EPA)</li>
+                                <li>A species tree is constructed by selecting all available single copy core genes with avg dn/ds < 1 and using ASTRAL to produce a coalescent tree from these gene trees</li>
+                                <li>A species tree is constructed by selecting all available single copy core genes with avg dn/ds < 1 and using ASTRAL to produce a coalescent tree from these gene trees</li>
+                            </ol>
+
+                            <img src="/static/images/query_workflow.png" class="workflowimg img-responsive"><br>
+                        </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="prioritization"><h3>Secondary metabolite gene cluster prioritization</h3></legend>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <ol type="1">
+                                <li>Biosynthetic Gene Clusters (BGCs) are identified with antiSMASH or read from genbank "cluster" annotations</li>
+                                <li>Locations of Core genes, DUF, Resistance models and custom models are checked if they are within cluster boundaries</li>
+                                <li>Additional cluster visualization is presented to identify where hits are present and in what context</li>
+                            </ol>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                            <img src="/static/images/bgcpriority.png" class="workflowimg img-responsive"><br>
+                    </div>
+                    </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="publication"><h3>Publication</h3></legend>
+                        <p>
+                            If you found ARTS to be helpful please cite the following publication:
+                        </p>
+                        <p>
+                            Alanjary,M., Kronmiller,B., Adamek,M., Blin,K., Weber,T., Huson,D., Philmus,B. and Ziemert,N. (2017) The Antibiotic Resistant Target Seeker (ARTS), an exploration engine for antibiotic cluster prioritization and novel drug target discovery. Nucleic Acids Res.,<a href="https://doi.org/10.1093/nar/gkx360" target="_blank">10.1093/nar/gkx360</a>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="ref"><h3>References</h3></legend>
+                        <ol type="1">
+                            <li>Thaker, M. N., Wang, W., Spanogiannopoulos, P., Waglechner, N., King, A. M., Medina, R., & Wright, G. D. (2013). Identifying producers of antibacterial compounds by screening for antibiotic resistance. Nature Biotechnology, 31(10), 922–927.</li>
+                            <li>Tang, X., Li, J., Millán-Aguiñaga, N., Zhang, J. J., O’Neill, E. C., Ugalde, J. A., … Moore, B. S. (2015). Identification of Thiotetronic Acid Antibiotic Biosynthetic Pathways by Target-directed Genome Mining. ACS Chemical Biology, 10(12), 2841–2849.</li>
+                            <li>Johnston, C. W., Skinnider, M. A., Dejong, C. A., Rees, P. N., Chen, G. M., Walker, C. G., … Magarvey, N. A. (2016). Assembly and clustering of natural antibiotics guides target identification. Nature Chemical Biology, 12(4), 233–239.</li>
+                            <li>Medema, M. H., Blin, K., Cimermancic, P., De Jager, V., Zakrzewski, P., Fischbach, M. A., … Breitling, R. (2011). AntiSMASH: Rapid identification, annotation and analysis of secondary metabolite biosynthesis gene clusters in bacterial and fungal genome sequences. Nucleic Acids Research, 39(SUPPL. 2), 339–346.</li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script src="/static/js/jquery.circliful.min.js"></script>
+    <script type="text/javascript" src="/static/js/showresult.js"></script>
+    <script type="text/javascript" src="/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="/static/js/buttons.html5.min.js"></script>
+
+{% endblock %}

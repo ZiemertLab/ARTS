@@ -1,0 +1,252 @@
+{% extends "main.html" %}
+{% block mainbody %}
+<link href="/static/css/sidebar.css" rel="stylesheet">
+<div id="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <nav id="spy">
+                <ul class="sidebar-nav nav">
+                    <li>
+                        <a href="#query" data-scroll>
+                            <span class="fa fa-anchor solo">Submitting</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#input" data-scroll>
+                            <span class="fa fa-anchor solo">Input</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#output" data-scroll>
+                            <span class="fa fa-anchor solo">Output</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#contact" data-scroll>
+                            <span class="fa fa-anchor solo">Contact</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                    <legend id="query"><h3>Submitting a query</h3></legend>
+                    <div class="col-md-6">
+                    <img src="/static/images/multi_upload_help1.png" class="img-responsive" style="border:1px solid #cccccc;">
+                    </div>
+                    <div class="col-md-6 helpnotes">
+                        <ol type="1">
+                            <li><h5>Mode Selection</h5>
+                                <ol type="a">
+                                    <li>Select this option if the input file contains genomic information from multiple species e.g. Metagenome assemblies</li>
+                                    <li>Select this option if the input file only contains genomic information from a specific organism</li>
+                                </ol>
+                            </li>
+                            <li><h5>Input Genome</h5>
+                                <ol type="a">
+                                    <li>Upload here if no antiSMASH annotation is present in file. Select a file or files to upload and click on the upload button. A minimal antiSMASH search will be performed automatically. Note: Multi-record fasta files will be processed as separate scaffolds. Input NCBI accession number or upload FASTA, Genbank or EMBL files</li>
+                                    <li>Job id for genome previously run on public antiSMASH server (antismash.secondarymetabolites.org) or Upload file from finished antiSMASH (ex: [filename].json). Genbank files with cluster annotation can also be submitted here (see <a href="http://mibig.secondarymetabolites.org">http://mibig.secondarymetabolites.org/</a> for example genbank cluster annotation format)</li>
+                                </ol>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="col-md-12"><br><br>
+                     <img src="/static/images/multi_upload_help2.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                    <ol type="1" start="3">
+                        <li><h5>Email and Reference selection</h5>
+                                <ol type="a">
+                                    <li>Email address to send job id link (optional). Be sure to bookmark result page if absent or select "save link in cookies" to display in results page.</li>
+                                    <li>Reference dataset for Phylogeney and duplication analysis. Currently all phyla are available with some of them grouped together (See group1, 2 and 3 in reference set option). <a href="/static/exampleinputs/actinoref.xlsx">Download organism list</a></li>
+                                </ol>
+                            </li>
+                            <li><h5>Run Options (Enable / Disable analysis)</h5>
+                                <ul>
+                                    <li>BGC proximity and duplication is always preformed</li>
+                                    <li>Phylogeny may be disabled, if query is not in reference phyla this will save unnecessary load time</li>
+                                    <li>Resistance models include Resfams and curated models from known drug targets</li>
+                                    <li>Pfam DUF search highlights unknown reactions in BGCs</li>
+                                    <li>Save run will store runid link in results page until next time browser's cookies are cleared. Default is set for private</li>
+                                </ul>
+                            </li>
+                        <li><h5>Hmmer thresholds for hits - using model specific values for trusted cutoff and noise cutoff (default: trusted)</h5></li>
+                        <li><h5>Custom model inputs</h5>
+                                <ol type="a">
+                                    <li>Valid Hmmer file for resistance models. Model will be converted to hmmer v3</li>
+                                    <li>Valid Hmmer file for core gene models. Model will be converted to hmmer v3</li>
+                                </ol>
+                        </li>
+                    </ol>
+                    <br><br>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="input"><h3>Input &amp; file formats</h3></legend>
+                        <h5>Accepted genbank formats require gene/CDS records for new job input while "cluster" annotations from antiSMASH are required when submitting into existing job section</h5>
+                        <h5>Fasta formats are parsed through antiSMASH and nucleotide data is required for codon alignments in phylogeny analysis</h5><br><br>
+                        <a href="/static/exampleinputs/example.gbk" class="btn btn-primary" style="width:250px;">Download example genbank file</a><br><br>
+                        <a href="/static/exampleinputs/example.fasta" class="btn btn-primary" style="width:250px;">Download example fasta file</a><br><br>
+                        <a href="/static/exampleinputs/example.hmm" class="btn btn-primary" style="width:250px;">Download custom hmm model file</a><br><br><br><br>
+                    </div>
+                </div>
+
+                    <div class="col-md-12">
+                        <legend id="output"><h3>Output &amp; interactive navigation for multiple results</h3></legend>
+                        <h4>General layout of results summary:</h4><br>
+                        <div class="row">
+                            <div class="col-md-6">
+                            <h5>The summaries of each individual ARTS run can be found in the first part of the results page. Results for
+                                each genome can also be navigated through clicking on the files provided in the "Organism" column<br><br>
+                            </h5>
+                            </div>
+                            <div class="col-md-6">
+                            <img src="/static/images/multiple_results_summary.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                            </div>
+                        </div>
+                        <h4>General datatables navigation:</h4><br>
+
+                            <div class="col-md-6">
+                            <h5>Data representation style from multiple results are much like the same with individual ARTS run results (please see single results page example below).
+                                One exception to mind is, in "Core Genes" table the numbers shown in different criterions represent the frequency of hits found
+                                in total input number; "1.0" in all genomes, "0,0" in none. In "Resistance Models" and "Duplication" tables numbers
+                                represent how many genomes have the corresponding hit.<br><br>
+                            </h5>
+                            </div>
+                            <div class="col-md-6">
+                            <img src="/static/images/multi_result_datatables.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                            </div>
+                        <h4>Bigscape overview:</h4><br>
+
+                        <div class="col-md-6">
+                            <h5>Bigscape result of the given inputs are also represented at the bottom of the results page. Here, the clustered
+                                BGCs from antiSMASH results are shown with associated core genes and resistance models. "Open bigscape overview"
+                                option also allows visualization of the interactive bigscape result page of the clusters.<br><br>
+                            </h5>
+                        </div>
+                            <div class="col-md-6">
+                            <img src="/static/images/multi_result_bgc_table.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                            </div>
+                        <legend id="output"><h3>Output &amp; interactive navigation for single results</h3></legend>
+                        <h4>General layout &amp; Interpreting results:</h4><br>
+                        <div class="row">
+                            <div class="col-md-6">
+                            <h5>Results can be viewed from multiple perspectives represented by each section on the left navigation bar: Core genes, Resistance models, Duplication, BGC Proximity, and phylogeny.
+                                The summary section gives counts for model hits and screening criteria as well as functional statistics of core gene hits.
+                                Each section has an interactive table to explore the data with detailed visualization where applicable.<br><br>
+                            </h5>
+                            </div>
+                            <div class="col-md-6">
+                            <img src="/static/images/artshelp_general.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                            </div>
+                        </div>
+                        <h4>General datatables navigation:</h4><br>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <img src="/static/images/artshelp_table.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                        </div>
+                        <div class="col-md-6">
+                            <ol type="a">
+                                <li>Click table headers to sort ascending or descending </li>
+                                <li>Click to toggle expandable rows indicated with a plus/minus sign</li>
+                                <li>Select number of entries to view at a time</li>
+                                <li>Search to find rows with certain terms included</li>
+                                <li>Move to next / previous page of table</li>
+                            </ol>
+                        </div></div>
+                        <h4>Core table:</h4><br>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <img src="/static/images/artshelp_tablecoresorting.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li>Quickly sort by clicking screening criteria titles</li>
+                                <li>D: Duplication, B: Biosynthetic Gene Cluster (BGC) proximity, P: Phylogeny, R: Resistance model hit</li>
+                                <li>Details for positive hits are provided for each in the expanded column and corresponding sections</li>
+                            </ul>
+                        </div></div>
+                        <h4>Core table expanded row:</h4><br>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <img src="/static/images/artshelp_tablecore.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                        </div>
+                        <div class="col-md-6">
+                            <ol type="a">
+                                <li>Rows of sequence hits. Ids are assigned arbitrarily, roll over id to see original record description</li>
+                                <li>Metadata for location in genome and bitscore of model match</li>
+                                <li>BGC proximity hits. Click to open row in proximity section</li>
+                                <li>Phylogeny hit, click to view tree in phylogeny section</li>
+                            </ol>
+                        </div></div>
+                        <h4>Duplicate table expanded row:</h4><br>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <img src="/static/images/artshelp_dup.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                        </div>
+                        <div class="col-md-6">
+                            Fasta headers for duplication hits are listed in the expanded row with the following information
+                            <ol type="a">
+                                <li>Source of sequence / Organism</li>
+                                <li>Extracted gene information (Gene identifier if applicable and description)</li>
+                                <li>Location start, end, and strand</li>
+                                <li>Scaffold number</li>
+                            </ol>
+                        </div></div>
+                        <h4>Proximity table expanded row:</h4><br>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <img src="/static/images/artshelp_tableprox.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                        </div>
+                        <div class="col-md-6">
+                            <ol type="a">
+                                <li>Cluster id link. Click link to open in original antismash view</li>
+                                <li>Quick preview with overlay of hits. Click domains for popup of details</li>
+                                <li>Hit table gives type, description and function of model if applicable</li>
+                            </ol>
+                        </div></div>
+                        <h4>Phylogeny view:</h4><br>
+                        <div class="row">
+                        <div class="col-md-12">
+                            <img src="/static/images/artshelp_phy.png" class="img-responsive" style="border:1px solid #cccccc;"><br><br>
+                        </div>
+                        <div class="col-md-12">
+                            <ol type="a">
+                                <li>Tree pane viewer for species and gene trees</li>
+                                <li>Zoom buttons to resize tree image</li>
+                                <li>Gene tree dropdown to select phylogeny hits directly</li>
+                            </ol>
+                        </div></div>
+                        <br><br>
+                        <a href="/example" class="btn btn-primary" style="width:250px;">View example output</a>
+                        <br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <legend id="contact"><h3>Contact</h3></legend>
+                        <h5>Email: <a href="mailto:arts-support@ziemertlab.com">arts-support@ziemertlab.com</a></h5>
+                        <p><strong>University of Tuebingen</strong><br>
+                        Dept. Microbiology and Biotechnology<br>
+                        Auf der Morgenstelle 28,<br>
+                        72076 Tübingen, Germany</p>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script src="/static/js/jquery.circliful.min.js"></script>
+    <script type="text/javascript" src="/static/js/showresult.js"></script>
+    <script type="text/javascript" src="/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="/static/js/buttons.html5.min.js"></script>
+
+{% endblock %}

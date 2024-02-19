@@ -1,0 +1,18 @@
+[Unit]
+Description=ArtsDaemon #%I
+After=artswebapp.service
+
+[Service]
+User=www-data
+Group=www-data
+RuntimeDirectory=artsdaemon
+RuntimeDirectoryMode=0750
+# Replace 'artsWD' and 'artsWD/.env/' with the actual working directory and virtualenv
+WorkingDirectory=artsWD
+Environment="PATH=artsWD/.env/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/usr/bin/env python runjobs.py run -pid /run/artsdaemon/pid%i
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
