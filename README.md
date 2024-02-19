@@ -52,6 +52,10 @@ it is necessery for the [conda](https://docs.conda.io/en/latest/index.html) pack
 ```bash
     cd arts
 ```
+- Prepare Actinobacteria reference set and related HMMs:
+```bash
+    unzip reference/'*.zip' -d reference/ 
+```
 - ARTS GitHub repository include only Actinobacteria reference set. If you need other reference sets, please download (~2.2GB) and unzip all of them.
 ```bash
     wget https://arts.ziemertlab.com/static/zip_refsets/all_references.zip
