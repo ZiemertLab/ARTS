@@ -1,0 +1,49 @@
+name: arts
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+  - bioconda
+dependencies:
+  # Base dependencies
+  - python = 3.8.10
+  - pip
+ 
+  # Runtime dependencies
+  - matplotlib = 3.3.4
+  - antismash
+  - mafft = 7.487
+  - trimal
+  - raxml
+  - emboss
+  - jinja2==3.0.1
+  - dataclasses
+  - backports.lzma==0.0.14
+  
+  # Developer dependencies
+  - pip:
+    - aniso8601==9.0.1                          
+    - blinker==1.4                   
+    - click==8.0.1                 
+    - cssselect==1.1.0                                        
+    - et-xmlfile==1.1.0                
+    - ete3==3.1.2                 
+    - flask==2.2.5                 
+    - flask-mail==0.9.1               
+    - flask-restful==0.3.9               
+    - flask-sockets==0.2.1            
+    - gevent==23.9.1             
+    - gevent-websocket==0.10.1       
+    - greenlet==2.0.0                    
+    - itsdangerous==2.0.1            
+    - jdcal==1.4.1                 
+    - lxml==4.9.1                  
+    - networkx==2.6.2               
+    - openpyxl==3.0.7                             
+    - pyexcelerator==0.6.4.1                        
+    - pypng==0.0.20             
+    - pyquery==1.4.3                         
+    - pytz==2021.1              
+    - redis==3.5.3                               
+    - straight-plugin==1.5.0                 
+    - werkzeug==2.3.8
