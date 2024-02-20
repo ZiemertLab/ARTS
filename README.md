@@ -38,7 +38,7 @@ There are three options for installing ARTS:
 ```bash
     python docker_run_arts.py [-h] [input] [resultdir] [-optional_arguments]
 ```
-- You can see the other details [on Docker Hub](https://hub.docker.com/r/ziemertlab/arts-beta)
+- You can see the other details [on Docker Hub](https://hub.docker.com/r/ziemertlab/arts)
 
 ## 2- Using Anaconda/Miniconda:
 We recommend [Anaconda3/Miniconda3](https://docs.anaconda.com/free/anaconda/install/index.html) (with python >=3.8) and 
@@ -65,10 +65,18 @@ it is necessery for the [conda](https://docs.conda.io/en/latest/index.html) pack
 ```bash
     conda env create -f environment.yml
 ```
-- Activate arts environment and run ARTS (See [Usage](https://github.com/ZiemertLab/ARTS/tree/master#usage) for more):
+- Activate arts environment:
 ```bash
     conda activate arts
 ```
+- Install required binary or use pre-compiled linux64bit bin (root / sudo required):
+  - Dependency:
+    - Ranger-DTL : ranger-dtl-U => http://compbio.mit.edu/ranger-dtl/
+  - Pre-compiled bin:
+    ```bash
+        tar -zxvf linux_64bins.tar.gz -C /usr/local/bin/ ranger-dtl-U
+    ```
+- Run ARTS (See [Usage](https://github.com/ZiemertLab/ARTS/tree/master#usage) for more):
 ```bash
     python artspipeline1.py [-h] [input] [refdir] [-optional_arguments]
 ```
@@ -113,7 +121,7 @@ See [antiSMASH](https://docs.antismash.secondarymetabolites.org/install/) for in
     ```bash
         tar -zxvf linux_64bins.tar.gz -C /usr/local/bin/
     ```
-- 
+
 - Run ARTS (See [Usage](https://github.com/ZiemertLab/ARTS/tree/master#usage) for more):
 ```bash
     python artspipeline1.py [-h] [input] [refdir] [-optional_arguments]
