@@ -38,7 +38,7 @@ There are three options for installing ARTS:
 ```bash
     python docker_run_arts.py [-h] [input] [resultdir] [-optional_arguments]
 ```
-- You can see the other details [on Docker Hub](https://hub.docker.com/r/ziemertlab/arts)
+- You can see the other details [on Docker Hub](https://hub.docker.com/r/ziemertlab/arts-beta)
 
 ## 2- Using Anaconda/Miniconda:
 We recommend [Anaconda3/Miniconda3](https://docs.anaconda.com/free/anaconda/install/index.html) (with python >=3.8) and 
