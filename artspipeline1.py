@@ -941,23 +941,24 @@ def startquery(infile=None,refdir=None,td=None,rd=None,hmmdbs=None,rnahmm=None,c
     log.info("SUCCESS! job finished")
     return True
 
+def parse_input_orgs(organisms: str) -> list[str]:
+    """
+    Args:
+        organisms (str): Comma-separated list of organism names
 
-def parse_input_orgs(input):
-    c = 0
-    final_input_list = []
-    if "," in input:
-        input_list = input.split(",")
-        for i in input_list:
-            if i in final_input_list:
-                c += 1
-                i_final = i + "_" + str(c)
-                final_input_list.append(i_final)
-            else:
-                final_input_list.append(i)
-        return final_input_list
+    Returns:
+        list[str]:       Parsed list of organism names.
+                         Names that appear multiple times are also enumerated in order to
+                         create unique namings
+    """
+    
+    organisms = organisms.split(",")
+    
+    if len(organisms) == 1:
+        return [organisms]
     else:
-        final_input_list = [input]
-    return final_input_list
+        return [f"{organism}_{organisms[:i].count(organism)}"
+                for i, organism in enumerate(organisms)]
 
 def run_bigscape(antismash_result_directories, bspath, maindir):
     combined_log.info("bigscape run start")
