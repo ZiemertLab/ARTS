@@ -1195,9 +1195,8 @@ class ARTSArgumentParser(ArgumentParser):
                           default = None,
                           metavar = "")
         grp7.add_argument("-org", "--orgname",
-                          help    = "Explicitly specify organism name(s) as comma separated list",
+                          help    = "Explicitly specify organism name",
                           type    = str,
-                          nargs   = '+',
                           default = None,
                           metavar = "")
 
