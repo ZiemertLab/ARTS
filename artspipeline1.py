@@ -22,6 +22,8 @@ from subprocess import Popen, PIPE
 from threading import Timer
 from distutils.dir_util import copy_tree
 
+from argparse import ArgumentParser, RawTextHelpFormatter
+from os.path  import isdir, isfile
 
 def makequerydb(infasta,tdir,fname,orgname,idprfx=""):
     makeseqsql.runlist([tdir+infasta],tdir+fname+".db",transonly=True,orgname=orgname)
@@ -941,24 +943,39 @@ def startquery(infile=None,refdir=None,td=None,rd=None,hmmdbs=None,rnahmm=None,c
     log.info("SUCCESS! job finished")
     return True
 
-
 def parse_input_orgs(input):
+    
     c = 0
     final_input_list = []
-    if "," in input:
-        input_list = input.split(",")
-        for i in input_list:
-            if i in final_input_list:
-                c += 1
-                i_final = i + "_" + str(c)
-                final_input_list.append(i_final)
-            else:
-                final_input_list.append(i)
-        return final_input_list
-    else:
-        final_input_list = [input]
+    input_list = input.split(",")
+    for i in input_list:
+        if i in final_input_list:
+            c += 1
+            i_final = i + "_" + str(c)
+            final_input_list.append(i_final)
+        else:
+            final_input_list.append(i)
     return final_input_list
 
+def parse_input_orgs2(input: str) -> list:
+    """
+    Args:
+        organisms (str): Comma-separated list
+
+    Returns:
+        list[str]:       Parsed list.
+                         Uses enumeration to create unique list elements 
+        
+    Example:
+    Input:  "e_coli,s_subtilis,e_coli,e_coli,s_subtilis,e_coli,"
+    Output: ["e_coli", "s_subtilis", "e_coli_1", "e_coli_2,", "s_subtilis_1", "e_coli_3"]
+    """
+    
+    input = input.split(",")
+    
+    return [f"{x}_{input[:i].count(x)}" if input[:i].count(x) >= 1 else x
+            for i, x in enumerate(input)]
+    
 def run_bigscape(antismash_result_directories, bspath, maindir):
     combined_log.info("bigscape run start")
     all_antismash_results = os.path.join(maindir , "all_antismash")
@@ -1072,32 +1089,123 @@ def call_startquery(args):
         generate_plots(main_dir)
 
 
+class ARTSArgumentParser(ArgumentParser):
+    
+    prog        = "ARTS"
+    description = "Start from genbank file and compare with pre-computed reference for Duplication and Transfers"
+    
+    def __init__(self):
+        
+        super().__init__(prog            = self.prog,
+                         description     = self.description,
+                         formatter_class = lambda prog: RawTextHelpFormatter(prog, max_help_position=35, width=100))
+        
+        self.add_argument("input",  help = "Query .gbk-file(s) as comma separated list")
+        self.add_argument("refdir", help = "Directory of precomputed reference files")
+        
+        grp1 = self.add_argument_group("Optional inputs")
+        grp1.add_argument("-hmms","--hmmdblist",
+                          help    = "Core gene-ID models (.hmm-file(s))",
+                          nargs   = '+',
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp1.add_argument("-khmms","--knownhmms",
+                          help    = "Resistance models (.hmm-file)",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp1.add_argument("-duf", "--dufhmms",
+                          help    = "Domains of unknown function (.hmm-file)",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp1.add_argument("-cchmms","--custcorehmms",
+                          help    ="User supplied core models (.hmm-file)",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp1.add_argument("-chmms","--customhmms",
+                          help    = "User supplied resistance models (.hmm-file)",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp1.add_argument("-rhmm","--rnahmmdb",
+                          help    = "RNA hmm models to run",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp1.add_argument("-pbt", "--prebuilttrees",
+                          help    = "Directory of prebuilt trees",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        
+        grp2 = self.add_argument_group("Antismash options")
+        grp2.add_argument("-ras","--runantismash",
+                          help    = "Run input file through antismash first",
+                          action  ='store_true')
+        grp2.add_argument("-asp", "--antismashpath",
+                          help    = "Path to antismash executable / 'run_antismash.py' script",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        
+        grp3 = self.add_argument_group("Bigscape options")
+        grp3.add_argument("-rbsc","--runbigscape",
+                          help    = "Run antismash results through bigscape",
+                          action  = 'store_true')
+        grp3.add_argument("-bscp","--bigscapepath",
+                          help    = "Path to bigscape executable / 'bigscape.py' script",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        
+        grp4 = self.add_argument_group("Astral options")
+        grp4.add_argument("-ast", "--astral",
+                          help    = "Path to Astral executable",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        
+        grp5 = self.add_argument_group("Performance")
+        grp5.add_argument("-cpu","--multicpu",
+                          help    = "Number of parallel processes (default: 1)",
+                          type    = int,
+                          default = 1,
+                          metavar = "")
+        
+        grp6 = self.add_argument_group("Analysis")
+        grp6.add_argument("-opt", "--options",
+                          help    = "Analysis to run. phyl=phylogeny, kres=known resistance, duf=Domain of unknown function, expert=Exploration mode (default: phyl,kres,duf)",
+                          default="phyl,kres,duf")
+        grp6.add_argument("-t","--thresh",
+                          help    = "Hmm reporting threshold. Use global bitscore value or Model specific options: gathering= GA, trusted= TC, noise= NC(default: none)",
+                          default = None)
+        
+        grp7 = self.add_argument_group("Output")
+        grp7.add_argument("-td", "--tempdir",
+                          help    = "Directory to create unique results folder",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp7.add_argument("-rd", "--resultdir",
+                          help    ="Directory to store results",
+                          type    = str,
+                          default = None,
+                          metavar = "")
+        grp7.add_argument("-org", "--orgname",
+                          help    = "Explicitly specify organism name",
+                          type    = str,
+                          default = None,
+                          metavar = "")
 
 # Commandline Execution
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="""Start from genbank file and compare with pre-computed reference for Duplication and Transfers""")
-    parser.add_argument("input", help="gbk file to start query")
-    parser.add_argument("refdir", help="Directory of precomputed reference files")
-    parser.add_argument("-hmms","--hmmdblist", help="hmm file, directory, or list of hmm models for core gene id",default=None)
-    parser.add_argument("-khmms","--knownhmms", help="Resistance models hmm file",default=False)
-    parser.add_argument("-duf","--dufhmms", help="Domains of unknown function hmm file",default=False)
-    parser.add_argument("-cchmms","--custcorehmms", help="User supplied core models. hmm file",default=False)
-    parser.add_argument("-chmms","--customhmms", help="User supplied resistance models. hmm file",default=False)
-    parser.add_argument("-rhmm","--rnahmmdb", help="RNA hmm models to run (default: None)",default=None)
-    parser.add_argument("-t","--thresh", help="Hmm reporting threshold. Use global bitscore value or Model specific options: gathering= GA, trusted= TC, noise= NC(default: none)",default=None)
-    parser.add_argument("-td", "--tempdir", help="Directory to create unique results folder", default=None)
-    parser.add_argument("-rd", "--resultdir", help="Directory to store results", default=None)
-    parser.add_argument("-ast", "--astral", help="Location of Astral jar executable default: Value of environment var 'ASTRALJAR' ", default=None)
-    parser.add_argument("-cpu", "--multicpu", help="Turn on Multi processing set # Cpus (default: Off, 1)", type=int, default=1)
-    parser.add_argument("-opt", "--options", help="Analysis to run. phyl=phylogeny, kres=known resistance, duf=Domain of unknown function, expert=Exploration mode (default: phyl,kres,duf)", default="phyl,kres,duf")
-    parser.add_argument("-org", "--orgname", help="Explicitly specify organism name", default=None)
-    parser.add_argument("-pbt", "--prebuilttrees", help="Directory of prebuilt trees", default=False)
-    parser.add_argument("-ras", "--runantismash", help="Run input file through antismash first", action='store_true', default=False)
-    parser.add_argument("-asp", "--antismashpath", help="Location of the executable file of antismash or location of antismash 'run_antismash.py' script", default=False)
-    parser.add_argument("-bcp", "--bigscapepath", help="location of bigscape 'bigscape.py' script", default=False)
-    parser.add_argument("-rbsc", "--runbigscape",help="Run antismash results through bigscape", action='store_true', default=False )
-    args = parser.parse_args()
-    call_startquery(args)
+    
+    args = ARTSArgumentParser().parse_args()
+    
+    #call_startquery(args)
     # startquery(infile=args.input,refdir=args.refdir,td=args.tempdir,rd=args.resultdir,hmmdbs=args.hmmdblist,rnahmm=args.rnahmmdb,cut=args.thresh,
     #            astjar=args.astral,toconsole=True,mcpu=args.multicpu,asrun=args.runantismash,knownhmms=args.knownhmms,dufhmms=args.dufhmms,
     #            custcorehmms=args.custcorehmms,custhmms=args.customhmms,aspath=args.antismashpath,options=args.options,custorgname=args.orgname,prebuilttrees=args.prebuilttrees)
